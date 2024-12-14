@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Survey Management System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #f8f8f8;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            padding: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], 
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .survey-list {
+            list-style: none;
+        }
+
+        .survey-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-container {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hospital Survey Management System</h1>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab active" onclick="showSection('create')">Create Survey</button>
+            <button class="tab" onclick="showSection('view')">View Surveys</button>
+            <button class="tab" onclick="showSection('edit')">Edit Survey</button>
+            <button class="tab" onclick="showSection('delete')">Delete Survey</button>
+        </div>
+
+        <!-- Create Survey Section -->
+        <div id="create" class="content-section active">
+            <h2>Create New Survey</h2>
+            <form id="createSurveyForm">
+                <div class="form-group">
+                    <label for="surveyTitle">Survey Title:</label>
+                    <input type="text" id="surveyTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="surveyDescription">Description:</label>
+                    <textarea id="surveyDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="eventType">Event Type:</label>
+                    <select id="eventType" required>
+                        <option value="appointment">Post Appointment</option>
+                        <option value="discharge">Post Discharge</option>
+                        <option value="medication">Medication Follow-up</option>
+                        <option value="general">General Feedback</option>
+                    </select>
+                </div>
+                <div id="questionsContainer"></div>
+                <button type="button" onclick="addQuestion()">Add Question</button>
+                <button type="submit">Create Survey</button>
+            </form>
+        </div>
+
+        <!-- View Surveys Section -->
+        <div id="view" class="content-section">
+            <h2>All Surveys</h2>
+            <div id="surveysList"></div>
+        </div>
+
+        <!-- Edit Survey Section -->
+        <div id="edit" class="content-section">
+            <h2>Edit Survey</h2>
+            <select id="surveySelect" onchange="loadSurveyForEdit()">
+                <option value="">Select a survey to edit</option>
+            </select>
+            <div id="editSurveyForm" style="display: none;"></div>
+        </div>
+
+        <!-- Delete Survey Section -->
+        <div id="delete" class="content-section">
+            <h2>Delete Survey</h2>
+            <div id="deleteSurveyList"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentSurveys = [];
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            if (sectionId === 'view' || sectionId === 'delete' || sectionId === 'edit') {
+                loadSurveys();
+            }
+        }
+
+        function addQuestion() {
+            const container = document.createElement('div');
+            container.className = 'question-container';
+            container.innerHTML = `
+                <div class="form-group">
+                    <label>Question:</label>
+                    <input type="text" class="question-text" required>
+                </div>
+                <div class="form-group">
+                    <label>Question Type:</label>
+                    <select class="question-type" onchange="handleQuestionTypeChange(this)">
+                        <option value="rating">Rating (1-5)</option>
+                        <option value="text">Text Response</option>
+                        <option value="yesno">Yes/No</option>
+                        <option value="multiple">Multiple Choice</option>
+                    </select>
+                </div>
+                <button type="button" onclick="removeQuestion(this)">Remove Question</button>
+            `;
+            document.getElementById('questionsContainer').appendChild(container);
+        }
+
+        function removeQuestion(button) {
+            button.parentElement.remove();
+        }
+
+        function handleQuestionTypeChange(select) {
+            const container = select.parentElement.parentElement;
+            const existingOptions = container.querySelector('.options-container');
+            if (existingOptions) {
+                existingOptions.remove();
+            }
+
+            if (select.value === 'multiple') {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'form-group options-container';
+                optionsDiv.innerHTML = `
+                    <label>Options (one per line):</label>
+                    <textarea rows="4" class="options-input"></textarea>
+                `;
+                container.appendChild(optionsDiv);
+            }
+        }
+
+        async function loadSurveys() {
+            try {
+                const response = await fetch('/api/surveys');
+                const surveys = await response.json();
+                currentSurveys = surveys;
+                updateSurveysDisplay(surveys);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateSurveysDisplay(surveys) {
+            // Update view section
+            const viewContainer = document.getElementById('surveysList');
+            viewContainer.innerHTML = surveys.map(survey => `
+                <div class="survey-item">
+                    <div>
+                        <h3>${survey.title}</h3>
+                        <p>${survey.description}</p>
+                        <p>Event Type: ${survey.event_type}</p>
+                        <p>Created: ${survey.created_at}</p>
+                        <h4>Questions:</h4>
+                        <ul>
+                            ${survey.questions.map(q => `
+                                <li>${q.text} (${q.type})</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update delete section
+            const deleteContainer = document.getElementById('deleteSurveyList');
+            deleteContainer.innerHTML = surveys.map(survey => `
+                <div class="survey-item">
+                    <span>${survey.title}</span>
+                    <button onclick="deleteSurvey(${survey.id})">Delete</button>
+                </div>
+            `).join('');
+
+            // Update edit dropdown
+            const editSelect = document.getElementById('surveySelect');
+            editSelect.innerHTML = '<option value="">Select a survey to edit</option>' +
+                surveys.map(survey => `
+                    <option value="${survey.id}">${survey.title}</option>
+                `).join('');
+        }
+
+        async function deleteSurvey(surveyId) {
+            if (confirm('Are you sure you want to delete this survey?')) {
+                try {
+                    const response = await fetch(`/api/surveys/${surveyId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        alert('Survey deleted successfully!');
+                        loadSurveys();
+                    } else {
+                        alert('Error deleting survey');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error deleting survey');
+                }
+            }
+        }
+
+        document.getElementById('createSurveyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const surveyData = {
+                title: document.getElementById('surveyTitle').value,
+                description: document.getElementById('surveyDescription').value,
+                eventType: document.getElementById('eventType').value,
+                questions: []
+            };
+
+            document.querySelectorAll('.question-container').forEach(container => {
+                const question = {
+                    text: container.querySelector('.question-text').value,
+                    type: container.querySelector('.question-type').value,
+                    options: []
+                };
+
+                if (question.type === 'multiple') {
+                    const optionsText = container.querySelector('.options-input').value;
+                    question.options = optionsText.split('\n').filter(opt => opt.trim());
+                }
+
+                surveyData.questions.push(question);
+            });
+
+            try {
+                const response = await fetch('/api/surveys', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(surveyData)
+                });
+
+                if (response.ok) {
+                    alert('Survey created successfully!');
+                    document.getElementById('createSurveyForm').reset();
+                    document.getElementById('questionsContainer').innerHTML = '';
+                    addQuestion(); // Add one empty question
+                    loadSurveys();
+                } else {
+                    alert('Error creating survey');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error creating survey');
+            }
+        });
+
+        // Add initial question on page load
+        addQuestion();
+    </script>
+</body>
+</html>

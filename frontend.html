@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            color: #1c1e21;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Header Styles */
+        .header {
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #1a73e8;
+            margin: 0 0 10px 0;
+        }
+        
+        /* Button Styles */
+        .button {
+            background: #1a73e8;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background: #1557b0;
+        }
+        
+        .button.secondary {
+            background: #f5f5f5;
+            color: #1a73e8;
+            border: 1px solid #1a73e8;
+        }
+        
+        .button.secondary:hover {
+            background: #e8f0fe;
+        }
+
+        .button.danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .button.danger:hover {
+            background: #c82333;
+        }
+        
+        /* Form Styles */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+
+        /* Dashboard Styles */
+        .dashboard-container {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .menu-item h3 {
+            color: #1a73e8;
+            margin: 0 0 10px 0;
+        }
+
+        .menu-item p {
+            color: #5f6368;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Section Content Styles */
+        .section-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .data-table tr:hover {
+            background: #e8f0fe;
+        }
+
+        /* Message Styles */
+        .error-message,
+        .success-message {
+            margin: 10px 0;
+            display: none;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: #d93025;
+            background: #fce8e6;
+        }
+
+        .success-message {
+            color: #0f9d58;
+            background: #e6f4ea;
+        }
+
+        /* User Info Styles */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-role {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Back Navigation */
+        .back-button {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            color: #1a73e8;
+            border: 1px solid #1a73e8;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background: #e8f0fe;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Hospital Management System</h1>
+            <h2>CS4400 – Database Systems</h2>
+            <h3>Team 6</h3>
+            <p>Veetrag, Sam, Amitesh</p>
+            <p>Professor: Raman Aravamudhan</p>
+            <p>TA: Nuo Xu</p>
+        </div>
+
+        <!-- Initial Screen -->
+        <div id="start-screen">
+            <button class="button" onclick="showAuthOptions()">Let's Get Started</button>
+        </div>
+
+        <!-- Auth Options -->
+        <div id="auth-options" style="display: none;">
+            <button class="button" onclick="showForm('login-form')">Login</button>
+            <button class="button" onclick="showForm('signup-form')">Sign Up</button>
+            <button class="button" onclick="showForm('forgot-form')">Forgot Password</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="form-container">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="login-username" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="login-password" placeholder="Enter your password">
+            </div>
+            <button class="button" onclick="login()">Login</button>
+            <div class="error-message" id="login-error"></div>
+            <button class="button secondary" onclick="showAuthOptions()">Back</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" class="form-container">
+            <h2>Sign Up</h2>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="signup-username" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="signup-password" placeholder="Choose a password">
+            </div>
+            <div class="form-group">
+                <label>Role:</label>
+                <select id="signup-role">
+                    <option value="">Select your role</option>
+                    <option value="patient">Patient</option>
+                    <option value="physician">Physician</option>
+                    <option value="nurse">Nurse</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Security Question:</label>
+                <select id="security-question">
+                    <option value="">Select a security question</option>
+                    <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                    <option value="What was your first pet's name?">What was your first pet's name?</option>
+                    <option value="What city were you born in?">What city were you born in?</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Security Answer:</label>
+                <input type="text" id="security-answer" placeholder="Enter your answer">
+            </div>
+            <button class="button" onclick="signup()">Sign Up</button>
+            <div class="error-message" id="signup-error"></div>
+            <button class="button secondary" onclick="showAuthOptions()">Back</button>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgot-form" class="form-container">
+            <h2>Forgot Password</h2>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="forgot-username" placeholder="Enter your username">
+            </div>
+            <div class="form-group" style="display: none;">
+                <label>Security Question:</label>
+                <p id="user-security-question"></p>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label>Security Answer:</label>
+                <input type="text" id="forgot-security-answer" placeholder="Enter your answer">
+            </div>
+            <div id="reset-password-section" style="display: none;">
+                <div class="form-group">
+                    <label>New Password:</label>
+                    <input type="password" id="new-password" placeholder="Enter new password">
+                </div>
+            </div>
+            <button class="button" onclick="forgotPassword()" id="forgot-submit">Next</button>
+            <div class="error-message" id="forgot-error"></div>
+            <button class="button secondary" onclick="showAuthOptions()">Back</button>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="welcome-screen" class="dashboard-container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <h2>Welcome, <span id="welcome-username"></span>!</h2>
+                    <span class="user-role" id="welcome-role"></span>
+                </div>
+                <button class="button danger" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Role-specific Dashboards -->
+            <div id="admin-dashboard" class="dashboard-menu">
+                <!-- Admin Menu Items -->
+                <div class="menu-item" onclick="showSection('manage-patients')">
+                    <h3>Manage Patients</h3>
+                    <p>View and manage patient records</p>
+                </div>
+                <div class="menu-item" onclick="showSection('manage-doctors')">
+                    <h3>Manage Doctors</h3>
+                    <p>View and manage physician records</p>
+                </div>
+                <div class="menu-item" onclick="showSection('manage-appointments')">
+                    <h3>Manage Appointments</h3>
+                    <p>Schedule and view appointments</p>
+                </div>
+                <div class="menu-item" onclick="showSection('manage-pharmacy')">
+                    <h3>Pharmacy Management</h3>
+                    <p>Manage medications and prescriptions</p>
+                </div>
+                <div class="menu-item" onclick="showSection('manage-billing')">
+                    <h3>Billing Management</h3>
+                    <p>Handle patient billing and payments</p>
+                </div>
+                <div class="menu-item" onclick="showSection('reports')">
+                    <h3>Reports</h3>
+                    <p>View system reports and analytics</p>
+                </div>
+                <div class="menu-item" onclick="showSection('reports')">
+                    <h3>Event-based Patient Surveys</h3>
+                    <p>create and send Event-based Patient Surveys</p>
+                </div>
+                <div class="menu-item" onclick="showSection('reports')">
+                    <h3>Notifications</h3>
+                    <p>create and send Notifications</p>
+                </div>
+            </div>
+
+            <div id="doctor-dashboard" class="dashboard-menu">
+                <!-- Doctor Menu Items -->
+                <div class="menu-item" onclick="showSection('my-patients')">
+                    <h3>My Patients</h3>
+                    <p>View and manage your patient list</p>
+                </div>
+                <div class="menu-item" onclick="showSection('appointments')">
+                    <h3>Appointments</h3>
+                    <p>View and manage your appointments</p>
+                </div>
+                <div class="menu-item" onclick="showSection('prescribe-medicine')">
+                    <h3>Prescribe Medicine</h3>
+                    <p>Write new prescriptions for patients</p>
+                </div>
+                <div class="menu-item" onclick="showSection('order-labs')">
+                    <h3>Order Lab Tests</h3>
+                    <p>Order and view lab test results</p>
+                </div>
+            </div>
+
+            <div id="nurse-dashboard" class="dashboard-menu">
+                <!-- Nurse Menu Items -->
+                <div class="menu-item" onclick="showSection('patient-vitals')">
+                    <h3>Patient Vitals</h3>
+                    <p>Record and monitor patient vitals</p>
+                </div>
+                <div class="menu-item" onclick="showSection('nurse-appointments')">
+                    <h3>Today's Appointments</h3>
+                    <p>View today's patient appointments</p>
+                </div>
+                <div class="menu-item" onclick="showSection('medication-schedule')">
+                    <h3>Medication Schedule</h3>
+                    <p>Manage patient medication schedules</p>
+                </div>
+            </div>
+
+            <div id="patient-dashboard" class="dashboard-menu">
+                <!-- Patient Menu Items -->
+                <div class="menu-item" onclick="showSection('book-appointment')">
+                    <h3>Book Appointment</h3>
+                    <p>Schedule a new appointment</p>
+                </div>
+                <div class="menu-item" onclick="showSection('my-appointments')">
+                    <h3>My Appointments</h3>
+                    <p>View your appointments</p>
+                </div>
+                <div class="menu-item" onclick="showSection('medical-history')">
+                    <h3>Medical History</h3>
+                    <p>View your medical records</p>
+                </div>
+                <div class="menu-item" onclick="showSection('my-prescriptions')">
+                    <h3>My Prescriptions</h3>
+                    <p>View your prescriptions</p>
+                </div>
+                <div class="menu-item" onclick="showSection('my-bills')">
+                    <h3>Bills & Payments</h3>
+                    <p>View and pay medical bills</p>
+                </div>
+            </div>
+
+            <!-- Section Content Areas -->
+            <!-- These will be populated dynamically -->
+            <div id="section-container"></div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div id="success-message" class="success-message"></div>
+        <div id="error-message" class="error-message"></div>
+    </div>
+
+    <script>
+        // Authentication Functions
+        function showAuthOptions() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('auth-options').style.display = 'block';
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('forgot-form').style.display = 'none';
+            document.getElementById('welcome-screen').style.display = 'none';
+            clearForms();
+        }
+
+        function showForm(formId) {
+            document.getElementById('auth-options').style.display = 'none';
+            document.getElementById(formId).style.display = 'block';
+        }
+
+        function clearForms() {
+            // Clear all input fields
+            const inputs = document.getElementsByTagName('input');
+            for (let input of inputs) {
+                input.value = '';
+            }
+            
+            // Clear all select fields
+            const selects = document.getElementsByTagName('select');
+            for (let select of selects) {
+                select.selectedIndex = 0;
+            }
+            
+            // Clear all error messages
+            const errors = document.getElementsByClassName('error-message');
+            for (let error of errors) {
+                error.style.display = 'none';
+            }
+            
+            // Reset forgot password form sections
+            const questionSection = document.querySelector('#forgot-form .form-group:nth-child(2)');
+            const answerSection = document.querySelector('#forgot-form .form-group:nth-child(3)');
+            if (questionSection) questionSection.style.display = 'none';
+            if (answerSection) answerSection.style.display = 'none';
+            
+            document.getElementById('reset-password-section').style.display = 'none';
+            document.getElementById('forgot-submit').textContent = 'Next';
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showError('Username and password are required');
+                return;
+            }
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('welcome-username').textContent = username;
+                    document.getElementById('welcome-role').textContent = data.role;
+                    document.getElementById('login-form').style.display = 'none';
+                    document.getElementById('welcome-screen').style.display = 'block';
+                    
+                    // Show appropriate dashboard
+                    hideAllDashboards();
+                    showDashboardByRole(data.role);
+                    loadDashboardData(data.role);
+                    
+                    clearForms();
+                } else {
+                    showError(data.message || 'Invalid username or password');
+                }
+            } catch (error) {
+                showError('An error occurred. Please try again.');
+            }
+        }
+
+        async function signup() {
+            const username = document.getElementById('signup-username').value;
+            const password = document.getElementById('signup-password').value;
+            const role = document.getElementById('signup-role').value;
+            const securityQuestion = document.getElementById('security-question').value;
+            const securityAnswer = document.getElementById('security-answer').value;
+            
+            if (!username || !password || !role || !securityQuestion || !securityAnswer) {
+                showError('All fields are required');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        role,
+                        security_question: securityQuestion,
+                        security_answer: securityAnswer
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess('Registration successful! Please login.');
+                    showForm('login-form');
+                    clearForms();
+                } else {
+                    showError(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                showError('An error occurred. Please try again.');
+            }
+        }
+
+        async function forgotPassword() {
+            const username = document.getElementById('forgot-username').value;
+            const securityAnswer = document.getElementById('forgot-security-answer').value;
+            const resetSection = document.getElementById('reset-password-section');
+            const submitButton = document.getElementById('forgot-submit');
+            
+            if (submitButton.textContent === 'Next') {
+                if (!username) {
+                    showError('Username is required');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/get-security-question', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        document.getElementById('user-security-question').textContent = data.security_question;
+                        document.querySelector('#forgot-form .form-group:nth-child(2)').style.display = 'block';
+                        document.querySelector('#forgot-form .form-group:nth-child(3)').style.display = 'block';
+                        submitButton.textContent = 'Verify Answer';
+                    } else {
+                        showError(data.message || 'User not found');
+                    }
+                } catch (error) {
+                    showError('An error occurred. Please try again.');
+                }
+            } else if (submitButton.textContent === 'Verify Answer') {
+                if (!securityAnswer) {
+                    showError('Security answer is required');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/verify-security', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, security_answer: securityAnswer })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        resetSection.style.display = 'block';
+                        submitButton.textContent = 'Reset Password';
+                    } else {
+                        showError(data.message || 'Invalid security answer');
+                    }
+                } catch (error) {
+                    showError('An error occurred. Please try again.');
+                }
+            } else {
+                const newPassword = document.getElementById('new-password').value;
+                
+                if (!newPassword) {
+                    showError('New password is required');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/reset-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username,
+                            security_answer: securityAnswer,
+                            new_password: newPassword
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showSuccess('Password reset successful! Please login.');
+                        showForm('login-form');
+                        clearForms();
+                    } else {
+                        showError(data.message || 'Password reset failed');
+                    }
+                } catch (error) {
+                    showError('An error occurred. Please try again.');
+                }
+            }
+        }
+
+        // Dashboard Management Functions
+        function hideAllDashboards() {
+            const dashboards = [
+                'admin-dashboard',
+                'doctor-dashboard',
+                'nurse-dashboard',
+                'patient-dashboard'
+            ];
+            dashboards.forEach(dash => {
+                document.getElementById(dash).style.display = 'none';
+            });
+        }
+
+        function showDashboardByRole(role) {
+            hideAllDashboards();
+            const dashboardMap = {
+                'admin': 'admin-dashboard',
+                'physician': 'doctor-dashboard',
+                'nurse': 'nurse-dashboard',
+                'patient': 'patient-dashboard'
+            };
+            const dashboardId = dashboardMap[role.toLowerCase()];
+            if (dashboardId) {
+                document.getElementById(dashboardId).style.display = 'grid';
+            }
+        }
+
+        // Section Management
+        function showSection(sectionId) {
+            hideAllDashboards();
+            
+            // Create or show section content
+            let sectionContent = document.getElementById(sectionId);
+            if (!sectionContent) {
+                sectionContent = createSectionContent(sectionId);
+            }
+            sectionContent.style.display = 'block';
+            
+            // Add back button
+            const backButton = document.createElement('button');
+            backButton.className = 'back-button';
+            backButton.textContent = 'Back to Dashboard';
+            backButton.onclick = () => {
+                sectionContent.style.display = 'none';
+                showDashboardByRole(document.getElementById('welcome-role').textContent);
+            };
+            sectionContent.insertBefore(backButton, sectionContent.firstChild);
+            
+            // Load section data
+            loadSectionData(sectionId);
+        }
+
+        // Utility Functions
+        function showSuccess(message) {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        function logout() {
+            hideAllDashboards();
+            showAuthOptions();
+            clearForms();
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            logout();
+        });
+    </script>
+</body>
+</html>
