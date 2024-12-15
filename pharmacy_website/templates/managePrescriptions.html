@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Prescriptions</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+    <script>
+        function setRequiredFields(action) {
+            const fields = ['medicineName', 'dosage', 'frequency', 'duration', 'status'];
+            fields.forEach(id => document.getElementById(id).required = (action === 'update'));
+            document.getElementById('prescriptionId').required = true;
+        }
+    </script>
+</head>
+<body>
+    <h2>Manage Prescriptions</h2>
+    <form id="managePrescriptionsForm" action="/manage-prescriptions" method="POST">
+        <label for="prescriptionId">Prescription ID:</label>
+        <input type="text" id="prescriptionId" name="prescriptionId" required>
+
+        <label for="medicineName">Medicine Name:</label>
+        <input type="text" id="medicineName" name="medicineName">
+
+        <label for="dosage">Dosage:</label>
+        <input type="text" id="dosage" name="dosage">
+
+        <label for="frequency">Frequency:</label>
+        <input type="text" id="frequency" name="frequency">
+
+        <label for="duration">Duration (Days):</label>
+        <input type="number" id="duration" name="duration">
+
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+
+        <button type="submit" name="action" value="update" onclick="setRequiredFields('update')">Update Prescription</button>
+        <button type="submit" name="action" value="delete" onclick="setRequiredFields('delete')">Delete Prescription</button>
+    </form>
+</body>
+</html>

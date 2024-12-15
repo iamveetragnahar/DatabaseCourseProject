@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface with Hospitals</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <form id="interfaceWithHospitalsForm" action="/interface-with-hospital" method="POST">
+        <h2>Interface with Hospitals</h2>
+        
+        <label for="hospitalId">Hospital ID:</label>
+        <input type="text" id="hospitalId" name="hospitalId" placeholder="Enter Hospital ID" required>
+
+        <label for="medicationOrderId">Medication Order ID:</label>
+        <input type="text" id="medicationOrderId" name="medicationOrderId" placeholder="Enter Order ID" required>
+
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+        </select>
+
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" placeholder="Add any additional notes"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

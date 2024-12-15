@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Medication History</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <h2>View Medication History</h2>
+    <form id="viewMedHistoryForm" action="/show-medication-history" method="GET">
+        <label for="patientId">Patient ID:</label>
+        <input type="text" id="patientId" name="patientId" required>
+
+        <label for="dateFrom">Date From:</label>
+        <input type="date" id="dateFrom" name="dateFrom">
+
+        <label for="dateTo">Date To:</label>
+        <input type="date" id="dateTo" name="dateTo">
+
+        <label for="medicationName">Medication Name:</label>
+        <input type="text" id="medicationName" name="medicationName" placeholder="Enter medication name or 'all'">
+
+        <button type="submit">Search</button>
+    </form>
+
+{% if records %}
+<table>
+    <thead>
+        <tr>
+            <th>Medication Name</th>
+            <th>Date Prescribed</th>
+            <th>Duration</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record['medicine_name'] }}</td>
+            <td>{{ record['date_prescribed'] }}</td>
+            <td>{{ record['duration'] }}</td>
+            <td>{{ record['notes'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No results found for the given criteria.</p>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prescribe Medicine</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <h2>Prescribe Medicine</h2>
+    <form id="prescribeMedicineForm" action="/prescribe-medicine" method="POST">
+        <label for="patientId">Patient ID:</label>
+        <input type="text" id="patientId" name="patientId" required>
+
+        <label for="medicineName">Medicine Name:</label>
+        <input type="text" id="medicineName" name="medicineName" required>
+
+        <label for="dosage">Dosage:</label>
+        <input type="text" id="dosage" name="dosage" required>
+
+        <label for="frequency">Frequency:</label>
+        <input type="text" id="frequency" name="frequency" required>
+
+        <label for="duration">Duration (Days):</label>
+        <input type="number" id="duration" name="duration" required>
+
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" placeholder="Add any additional notes"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

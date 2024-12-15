@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication History Results</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <h2>Medication History</h2>
+    {% if records %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Medicine Name</th>
+                    <th>Date Prescribed</th>
+                    <th>Duration</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                    <tr>
+                        <td>{{ record['patient_id'] }}</td>
+                        <td>{{ record['medicine_name'] }}</td>
+                        <td>{{ record['date_prescribed'] }}</td>
+                        <td>{{ record['duration'] }}</td>
+                        <td>{{ record['notes'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No medication history found for the selected filters.</p>
+    {% endif %}
+    <a href="/view-medication-history">Back to form</a>
+</body>
+</html>
