@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Test Results</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <form id="testResultForm" action="/manage/test-result" method="POST">
+        <h2>Enter Test Results</h2>
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="result_id" value="">
+
+        <label for="orderId">Order ID:</label>
+        <input id="orderId" name="order_id" required>
+
+        <label for="resultDetails">Result Details:</label>
+        <textarea id="resultDetails" name="result_details" required></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

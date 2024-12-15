@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Lab Results</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <h2>View Lab Results</h2>
+
+    <!-- Form to enter Patient ID -->
+    <form id="viewResultsForm" action="/view-results" method="POST">
+        <label for="patientId">Enter Patient ID:</label>
+        <input type="text" id="patientId" name="patient_id" placeholder="Patient ID" required>
+        <button type="submit">View Results</button>
+    </form>
+
+    <!-- Display error message if available -->
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <!-- Table to display results if available -->
+    {% if results and results|length > 0 %}
+    <h3>Results for Patient ID: {{ selected_patient_id }}</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Result ID</th>
+                <th>Test Type</th>
+                <th>Details</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result['ResultID'] }}</td>
+                <td>{{ result['TestTypeName'] }}</td>
+                <td>{{ result['ResultDetails'] }}</td>
+                <td>{{ result['ResultDate'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif selected_patient_id %}
+    <p>No results found for Patient ID: {{ selected_patient_id }}</p>
+    {% endif %}
+</body>
+</html>

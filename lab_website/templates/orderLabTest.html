@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Lab Tests</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <form id="labOrderForm" action="/manage/lab-order" method="POST">
+        <h2>Order Lab Tests</h2>
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="order_id" value="">
+
+        <label for="patientId">Patient ID:</label>
+        <input id="patientId" name="patient_id" required>
+
+        <label for="testType">Test Type:</label>
+        <input id="testType" name="test_type" required>
+
+        <label for="orderDate">Order Date:</label>
+        <input type="date" id="orderDate" name="order_date" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

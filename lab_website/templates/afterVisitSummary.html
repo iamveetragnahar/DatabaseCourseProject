@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After Visit Summary</title>
+    <link rel="stylesheet" href="/static/form-styles.css">
+</head>
+<body>
+    <form id="visitSummaryForm" action="/manage/visit-summary" method="POST">
+        <h2>After Visit Summary</h2>
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="visit_id" value="">
+
+        <label for="patientId">Patient ID:</label>
+        <input id="patientId" name="patient_id" required>
+
+        <label for="visitDate">Visit Date:</label>
+        <input type="date" id="visitDate" name="visit_date" required>
+
+        <label for="summary">Summary:</label>
+        <textarea id="summary" name="summary" required></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
